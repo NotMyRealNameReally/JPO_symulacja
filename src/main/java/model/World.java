@@ -3,6 +3,7 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import dto.WorldDto;
 
@@ -11,6 +12,7 @@ public class World {
     private final int sizeX;
     private final int sizeY;
     private final List<Organism> organisms;
+    private final List<Organism> organismsToAdd;
     private final WorldLogger logger;
     private WorldListener listener;
 
@@ -18,6 +20,7 @@ public class World {
         sizeX = 20;
         sizeY = 20;
         organisms = new ArrayList<>();
+        organismsToAdd = new ArrayList<>();
         organisms.add(new Wolf(2, 2, this));
         organisms.add(new Wolf(6, 9, this));
         organisms.add(new Wolf(7, 3, this));
@@ -37,14 +40,18 @@ public class World {
                  .forEach(organism -> {
                      if (!organism.isDead()) {
                          organism.action();
-                         collisionOccurred(organism)
-                                 .ifPresent(other -> resolveCollision(organism, other));
                          organism.addActionPoints(1);
                      }
                  });
         organisms.removeIf(Organism::isDead);
+        organisms.addAll(organismsToAdd);
+        organismsToAdd.clear();
         turnCounter++;
         listener.worldChanged();
+    }
+
+    void addOrganism(Organism organism){
+        organismsToAdd.add(organism);
     }
 
     boolean isValidPosition(int posX, int posY) {
@@ -56,38 +63,16 @@ public class World {
 
     boolean isValidEmptyPosition(int posX, int posY){
         return isValidPosition(posX, posY) &&
-                organisms.stream()
+                Stream.concat(organisms.stream(), organismsToAdd.stream())
                          .noneMatch(organism -> posX == organism.getPosX() && posY == organism.getPosY());
     }
 
-    private Optional<Organism> collisionOccurred(Organism organism) {
+    Optional<Organism> collisionOccurred(Organism organism) {
         return organisms.stream()
                         .filter(o -> o.posX == organism.posX &&
                                 o.posY == organism.posY &&
                                 o != organism)
                         .findFirst();
-    }
-
-    private void resolveCollision(Organism attacker, Organism defender) {
-        if (attacker.getClass() == defender.getClass() && attacker instanceof Animal) {
-            handleReproduction((Animal)attacker);
-        } else {
-            FightResults results = defender.fight(attacker);
-            results.getWinnerAfflictions().forEach(affliction -> applyAffliction(results.getWinner(), affliction));
-            results.getLoserAfflictions().forEach(affliction -> applyAffliction(results.getLoser(), affliction));
-        }
-    }
-
-    private void handleReproduction(Animal parent){
-        Animal child = (Animal)parent.reproduce();
-
-
-    }
-
-    private void moveToEmptyPosition(Organism organism){
-        while (isValidEmptyPosition(organism.getPosX(), organism.getPosY())){
-            organism.move()
-        }
     }
 
     private void applyAffliction(Organism organism, Affliction affliction) {

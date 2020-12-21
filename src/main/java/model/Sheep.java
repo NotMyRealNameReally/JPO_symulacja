@@ -6,12 +6,7 @@ class Sheep extends Animal{
     }
 
     @Override
-    public void draw() {
-
-    }
-
-    @Override
-    public Organism reproduce() {
-        return new Sheep(posX, posY, world);
+    protected Animal reproduce(int x, int y) {
+        return new Sheep(x, y, world);
     }
 }

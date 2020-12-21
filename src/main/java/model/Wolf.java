@@ -6,12 +6,7 @@ class Wolf extends Animal {
     }
 
     @Override
-    public void draw() {
-
-    }
-
-    @Override
-    public Organism reproduce() {
-        return new Wolf(posX, posY, world);
+    protected Animal reproduce(int x, int y) {
+        return new Wolf(x, y, world);
     }
 }

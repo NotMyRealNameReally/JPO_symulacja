@@ -34,16 +34,14 @@ public abstract class Organism implements Comparable<Organism>{
         this.icon = new ImageIcon(ClassLoader.getSystemResource(iconName));
     }
 
-    public abstract void action();
-    public abstract FightResults fight(Organism attacker);
-    public abstract void draw();
-    public abstract Organism reproduce();
+    protected abstract void action();
+    protected abstract FightResults fight(Organism attacker);
 
     public void addActionPoints(int amount){
         actionPoints += amount;
     }
 
-    public void tagAsDead(){
+    void tagAsDead(){
         dead = true;
     }
 

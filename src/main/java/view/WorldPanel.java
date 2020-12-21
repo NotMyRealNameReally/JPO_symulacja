@@ -36,6 +36,7 @@ public class WorldPanel extends JPanel implements WorldListener {
         repaint();
     }
 
+    @Override
     public void worldChanged() {
         repaint();
     }
