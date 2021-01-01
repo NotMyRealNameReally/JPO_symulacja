@@ -1,33 +1,32 @@
 package model;
 
-import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
 abstract class Animal extends Organism {
+    private boolean canReproduce;
 
-    public Animal(int strength, int initiative, int posX, int posY, World world, String iconName) {
-        super(strength, initiative, posX, posY, world, iconName);
+    public Animal(int strength, int initiative, Position position, World world, String iconName) {
+        super(strength, initiative, position, world, iconName);
     }
 
-    protected abstract Animal reproduce(int x, int y);
+    protected abstract Animal reproduce(Position position);
 
     @Override
     public void action() {
-        while (actionPoints > 0) {
-            int prevX = getPosX();
-            int prevY = getPosY();
+        while (getActionPoints() > 0) {
+            Position prevPosition = getPosition();
             move(true);
-            world.collisionOccurred(this).ifPresent(other -> {
-                if(other.getClass() == this.getClass()){
-                    Animal child = reproduce(prevX, prevY);
-                    world.addOrganism(child);
-                    posX = prevX;
-                    posY = prevY;
+            getWorld().collisionOccurred(this).ifPresent(other -> {
+                if (other.getClass() == this.getClass()) {
+                    Animal child = reproduce(prevPosition);
+                    getWorld().addOrganism(child);
+                    setPosition(prevPosition);
                     child.move(false);
-                } else{
+                } else {
                     fight(other);
                 }
             });
-            actionPoints--;
+            setActionPoints(getActionPoints() - 1);
         }
     }
 
@@ -35,7 +34,7 @@ abstract class Animal extends Organism {
     public FightResults fight(Organism defender) {
         FightResults results;
 
-        if (defender.strength < this.strength) {
+        if (defender.getStrength() < this.getStrength()) {
             results = new FightResults(this, defender);
         } else {
             results = new FightResults(defender, this);
@@ -45,20 +44,24 @@ abstract class Animal extends Organism {
     }
 
     void move(boolean collisionAllowed) {
-        BiPredicate<Integer, Integer> predicate;
-        if(collisionAllowed){
-            predicate = world::isValidPosition;
-        } else{
-            predicate = world::isValidEmptyPosition;
+        Predicate<Position> predicate;
+        if (collisionAllowed) {
+            predicate = getWorld()::isValidPosition;
+        } else {
+            predicate = getWorld()::isValidEmptyPosition;
         }
         int dx;
         int dy;
-        do
-        {
+        Position newPos;
+        do {
             dx = (int) (1 - Math.round(Math.random() * 2));
             dy = (int) (1 - Math.round(Math.random() * 2));
-        } while (!predicate.test(posX + dx, posY + dy));
-        posX += dx;
-        posY += dy;
+            newPos = getPosition().translate(dx, dy);
+        } while (!predicate.test(newPos));
+        setPosition(newPos);
+    }
+
+    private void getPossibleMoves(){
+
     }
 }

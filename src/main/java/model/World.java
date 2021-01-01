@@ -21,12 +21,12 @@ public class World {
         sizeY = 20;
         organisms = new ArrayList<>();
         organismsToAdd = new ArrayList<>();
-        organisms.add(new Wolf(2, 2, this));
-        organisms.add(new Wolf(6, 9, this));
-        organisms.add(new Wolf(7, 3, this));
-        organisms.add(new Sheep(2, 3, this));
-        organisms.add(new Sheep(4, 5, this));
-        organisms.add(new Sheep(6, 3, this));
+        organisms.add(new Wolf(new Position(2, 7), this));
+        organisms.add(new Wolf(new Position(6, 9), this));
+        organisms.add(new Wolf(new Position(7, 3), this));
+        organisms.add(new Sheep(new Position(2, 3), this));
+        organisms.add(new Sheep(new Position(4, 5), this));
+        organisms.add(new Sheep(new Position(6, 3), this));
         turnCounter = 0;
 
         this.logger = logger;
@@ -54,23 +54,22 @@ public class World {
         organismsToAdd.add(organism);
     }
 
-    boolean isValidPosition(int posX, int posY) {
-        return posX >= 0 &&
-                posX < sizeX &&
-                posY >= 0 &&
-                posY < sizeY;
+    boolean isValidPosition(Position pos) {
+        return pos.getX() >= 0 &&
+                pos.getX() < sizeX &&
+                pos.getY() >= 0 &&
+                pos.getY() < sizeY;
     }
 
-    boolean isValidEmptyPosition(int posX, int posY){
-        return isValidPosition(posX, posY) &&
+    boolean isValidEmptyPosition(Position pos){
+        return isValidPosition(pos) &&
                 Stream.concat(organisms.stream(), organismsToAdd.stream())
-                         .noneMatch(organism -> posX == organism.getPosX() && posY == organism.getPosY());
+                         .noneMatch(organism -> organism.getPosition().equals(pos));
     }
 
     Optional<Organism> collisionOccurred(Organism organism) {
         return organisms.stream()
-                        .filter(o -> o.posX == organism.posX &&
-                                o.posY == organism.posY &&
+                        .filter(o -> o.getPosition().equals(organism.getPosition()) &&
                                 o != organism)
                         .findFirst();
     }
@@ -80,6 +79,23 @@ public class World {
             case DEAD -> organism.tagAsDead();
         }
     }
+
+    List<Position> getPossibleMovesWithCollision(Organism organism){
+        List<Position> positions = new ArrayList<>();
+        Position current = organism.getPosition();
+
+        for(int dx = -1; dx <= 1; dx++){
+           for(int dy = -1; dy <= 1; dy++){
+               Position position = current.translate(dx, dy);
+               if(isValidPosition(position)){
+                   positions.add(position);
+               }
+           }
+        }
+        positions.remove(current);
+        return positions;
+    }
+
 
     public int getTurnCounter() {
         return turnCounter;

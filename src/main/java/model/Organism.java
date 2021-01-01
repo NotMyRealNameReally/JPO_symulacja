@@ -3,32 +3,29 @@ package model;
 import javax.swing.ImageIcon;
 
 public abstract class Organism implements Comparable<Organism>{
-    protected int strength;
-    protected int initiative;
-    protected int posX;
-    protected int posY;
-    protected int age;
-    protected int actionPoints;
-    protected final World world;
+    private int strength;
+    private int initiative;
+    private Position position;
+    private int age;
+    private int actionPoints;
+    private final World world;
     private boolean dead = false;
     private final ImageIcon icon;
 
-    public Organism(int strength, int initiative, int posX, int posY, World world, String iconName) {
+    public Organism(int strength, int initiative, Position position, World world, String iconName) {
         this.strength = strength;
         this.initiative = initiative;
-        this.posX = posX;
-        this.posY = posY;
+        this.position = position;
         this.age = 0;
         this.actionPoints = 1;
         this.world = world;
         this.icon = new ImageIcon(ClassLoader.getSystemResource(iconName));
     }
 
-    public Organism(int strength, int initiative, int posX, int posY, int age, World world, String iconName) {
+    public Organism(int strength, int initiative, Position position, int age, World world, String iconName) {
         this.strength = strength;
         this.initiative = initiative;
-        this.posX = posX;
-        this.posY = posY;
+        this.position = position;
         this.age = age;
         this.world = world;
         this.icon = new ImageIcon(ClassLoader.getSystemResource(iconName));
@@ -45,12 +42,52 @@ public abstract class Organism implements Comparable<Organism>{
         dead = true;
     }
 
-    public int getPosX() {
-        return posX;
+    public Position getPosition(){
+        return position;
     }
 
-    public int getPosY() {
-        return posY;
+    public void setPosition(Position position){
+        this.position = position;
+    }
+
+    public int getStrength() {
+        return strength;
+    }
+
+    public void setStrength(int strength) {
+        this.strength = strength;
+    }
+
+    public int getInitiative() {
+        return initiative;
+    }
+
+    public void setInitiative(int initiative) {
+        this.initiative = initiative;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public int getActionPoints() {
+        return actionPoints;
+    }
+
+    public void setActionPoints(int actionPoints) {
+        this.actionPoints = actionPoints;
+    }
+
+    public World getWorld() {
+        return world;
+    }
+
+    public void setDead(boolean dead) {
+        this.dead = dead;
     }
 
     public boolean isDead(){

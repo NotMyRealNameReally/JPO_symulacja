@@ -1,12 +1,12 @@
 package model;
 
 class Sheep extends Animal{
-    public Sheep(int posX, int posY, World world) {
-        super(4, 4, posX, posY, world, "sheep.png");
+    public Sheep(Position position, World world) {
+        super(4, 4, position, world, "sheep.png");
     }
 
     @Override
-    protected Animal reproduce(int x, int y) {
-        return new Sheep(x, y, world);
+    protected Animal reproduce(Position position) {
+        return new Sheep(position, getWorld());
     }
 }

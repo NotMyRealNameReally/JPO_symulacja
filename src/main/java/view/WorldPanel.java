@@ -59,8 +59,8 @@ public class WorldPanel extends JPanel implements WorldListener {
                     .getImage();
 
             g.drawImage(icon,
-                    organism.getPosX() * CELL_SIZE + (CELL_SIZE - icon.getWidth(this)) / 2,
-                    organism.getPosY() * CELL_SIZE + (CELL_SIZE - icon.getHeight(this)) / 2,
+                    organism.getPosition().getX() * CELL_SIZE + (CELL_SIZE - icon.getWidth(this)) / 2,
+                    organism.getPosition().getY() * CELL_SIZE + (CELL_SIZE - icon.getHeight(this)) / 2,
                     this);
         });
     }
