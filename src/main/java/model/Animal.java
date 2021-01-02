@@ -1,6 +1,7 @@
 package model;
 
-import java.util.function.Predicate;
+import java.util.List;
+import java.util.Random;
 
 abstract class Animal extends Organism {
     private boolean canReproduce;
@@ -44,24 +45,16 @@ abstract class Animal extends Organism {
     }
 
     void move(boolean collisionAllowed) {
-        Predicate<Position> predicate;
+        List<Position> possiblePositions;
         if (collisionAllowed) {
-            predicate = getWorld()::isValidPosition;
+            possiblePositions = getWorld().getPossibleMovesWithCollision(this);
         } else {
-            predicate = getWorld()::isValidEmptyPosition;
+            possiblePositions = getWorld().getPossibleMovesNoCollision(this);
         }
-        int dx;
-        int dy;
-        Position newPos;
-        do {
-            dx = (int) (1 - Math.round(Math.random() * 2));
-            dy = (int) (1 - Math.round(Math.random() * 2));
-            newPos = getPosition().translate(dx, dy);
-        } while (!predicate.test(newPos));
-        setPosition(newPos);
-    }
-
-    private void getPossibleMoves(){
-
+        if(!possiblePositions.isEmpty()){
+            Random r = new Random();
+            Position newPos = possiblePositions.get(r.nextInt(possiblePositions.size()));
+            setPosition(newPos);
+        }
     }
 }

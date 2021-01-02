@@ -1,8 +1,7 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import dto.WorldDto;
@@ -61,9 +60,8 @@ public class World {
                 pos.getY() < sizeY;
     }
 
-    boolean isValidEmptyPosition(Position pos){
-        return isValidPosition(pos) &&
-                Stream.concat(organisms.stream(), organismsToAdd.stream())
+    boolean isEmptyPosition(Position pos){
+        return Stream.concat(organisms.stream(), organismsToAdd.stream())
                          .noneMatch(organism -> organism.getPosition().equals(pos));
     }
 
@@ -94,6 +92,12 @@ public class World {
         }
         positions.remove(current);
         return positions;
+    }
+
+    List<Position> getPossibleMovesNoCollision(Organism organism){
+        return getPossibleMovesWithCollision(organism).stream()
+                .filter(this::isEmptyPosition)
+                .collect(Collectors.toList());
     }
 
 
