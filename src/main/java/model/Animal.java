@@ -6,33 +6,39 @@ import java.util.Random;
 abstract class Animal extends Organism {
     private boolean canReproduce;
 
-    public Animal(int strength, int initiative, Position position, World world, String iconName) {
+    Animal(int strength, int initiative, Position position, World world, String iconName) {
         super(strength, initiative, position, world, iconName);
     }
 
     protected abstract Animal reproduce(Position position);
 
     @Override
-    public void action() {
-        while (getActionPoints() > 0) {
-            Position prevPosition = getPosition();
-            move(true);
+    ActionResult action() {
+        ActionResult actionResult = new ActionResult(this);
+        canReproduce = !getWorld().getPossibleMovesNoCollision(this).isEmpty();
+        Position prevPosition = getPosition();
+        if (move(true)) {
+            actionResult.setNewPosition(getPosition());
             getWorld().collisionOccurred(this).ifPresent(other -> {
                 if (other.getClass() == this.getClass()) {
-                    Animal child = reproduce(prevPosition);
-                    getWorld().addOrganism(child);
+                    if (canReproduce) {
+                        actionResult.reproductionOccurred();
+                        Animal child = reproduce(prevPosition);
+                        getWorld().addOrganism(child);
+                        child.move(false);
+                    }
                     setPosition(prevPosition);
-                    child.move(false);
                 } else {
-                    fight(other);
+                    actionResult.setFightResults(fight(other));
                 }
             });
-            setActionPoints(getActionPoints() - 1);
         }
+        setActionPoints(getActionPoints() - 1);
+        return actionResult;
     }
 
     @Override
-    public FightResults fight(Organism defender) {
+    protected FightResults fight(Organism defender) {
         FightResults results;
 
         if (defender.getStrength() < this.getStrength()) {
@@ -44,17 +50,19 @@ abstract class Animal extends Organism {
         return results;
     }
 
-    void move(boolean collisionAllowed) {
+    private boolean move(boolean collisionAllowed) {
         List<Position> possiblePositions;
         if (collisionAllowed) {
             possiblePositions = getWorld().getPossibleMovesWithCollision(this);
         } else {
             possiblePositions = getWorld().getPossibleMovesNoCollision(this);
         }
-        if(!possiblePositions.isEmpty()){
+        if (!possiblePositions.isEmpty()) {
             Random r = new Random();
             Position newPos = possiblePositions.get(r.nextInt(possiblePositions.size()));
             setPosition(newPos);
+            return true;
         }
+        return false;
     }
 }

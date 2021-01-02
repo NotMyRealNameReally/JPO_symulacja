@@ -1,6 +1,8 @@
 package model;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -38,7 +40,11 @@ public class World {
         organisms.stream().sorted()
                  .forEach(organism -> {
                      if (!organism.isDead()) {
-                         organism.action();
+                         while (organism.getActionPoints() > 0) {
+                             ActionResult result = organism.action();
+                             result.getFightResults().ifPresent(this::resolveFight);
+                             //logger.logAction(result);
+                         }
                          organism.addActionPoints(1);
                      }
                  });
@@ -49,27 +55,55 @@ public class World {
         listener.worldChanged();
     }
 
-    void addOrganism(Organism organism){
+    void addOrganism(Organism organism) {
         organismsToAdd.add(organism);
     }
 
-    boolean isValidPosition(Position pos) {
+    List<Position> getPossibleMovesWithCollision(Organism organism) {
+        List<Position> positions = new ArrayList<>();
+        Position current = organism.getPosition();
+
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dy = -1; dy <= 1; dy++) {
+                Position position = current.translate(dx, dy);
+                if (isValidPosition(position)) {
+                    positions.add(position);
+                }
+            }
+        }
+        positions.remove(current);
+        return positions;
+    }
+
+    List<Position> getPossibleMovesNoCollision(Organism organism) {
+        return getPossibleMovesWithCollision(organism)
+                .stream()
+                .filter(this::isEmptyPosition)
+                .collect(Collectors.toList());
+    }
+
+    Optional<Organism> collisionOccurred(Organism organism) {
+        return Stream.concat(organisms.stream(), organismsToAdd.stream())
+                     .filter(o -> o.getPosition().equals(organism.getPosition()) &&
+                             o != organism)
+                     .findFirst();
+    }
+
+    private boolean isValidPosition(Position pos) {
         return pos.getX() >= 0 &&
                 pos.getX() < sizeX &&
                 pos.getY() >= 0 &&
                 pos.getY() < sizeY;
     }
 
-    boolean isEmptyPosition(Position pos){
+    private boolean isEmptyPosition(Position pos) {
         return Stream.concat(organisms.stream(), organismsToAdd.stream())
-                         .noneMatch(organism -> organism.getPosition().equals(pos));
+                     .noneMatch(organism -> organism.getPosition().equals(pos));
     }
 
-    Optional<Organism> collisionOccurred(Organism organism) {
-        return organisms.stream()
-                        .filter(o -> o.getPosition().equals(organism.getPosition()) &&
-                                o != organism)
-                        .findFirst();
+    private void resolveFight(FightResults fightResults) {
+        fightResults.getWinnerAfflictions().forEach(affliction -> applyAffliction(fightResults.getWinner(), affliction));
+        fightResults.getLoserAfflictions().forEach(affliction -> applyAffliction(fightResults.getLoser(), affliction));
     }
 
     private void applyAffliction(Organism organism, Affliction affliction) {
@@ -77,29 +111,6 @@ public class World {
             case DEAD -> organism.tagAsDead();
         }
     }
-
-    List<Position> getPossibleMovesWithCollision(Organism organism){
-        List<Position> positions = new ArrayList<>();
-        Position current = organism.getPosition();
-
-        for(int dx = -1; dx <= 1; dx++){
-           for(int dy = -1; dy <= 1; dy++){
-               Position position = current.translate(dx, dy);
-               if(isValidPosition(position)){
-                   positions.add(position);
-               }
-           }
-        }
-        positions.remove(current);
-        return positions;
-    }
-
-    List<Position> getPossibleMovesNoCollision(Organism organism){
-        return getPossibleMovesWithCollision(organism).stream()
-                .filter(this::isEmptyPosition)
-                .collect(Collectors.toList());
-    }
-
 
     public int getTurnCounter() {
         return turnCounter;

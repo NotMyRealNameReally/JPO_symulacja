@@ -6,9 +6,6 @@ import java.nio.charset.StandardCharsets;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import controller.ControlPanelListener;
-import controller.Controller;
-
 public class ControlPanel extends JPanel {
     private JButton newWorldBtn;
     private JButton nextTurnBtn;

@@ -12,7 +12,7 @@ public abstract class Organism implements Comparable<Organism>{
     private boolean dead = false;
     private final ImageIcon icon;
 
-    public Organism(int strength, int initiative, Position position, World world, String iconName) {
+    Organism(int strength, int initiative, Position position, World world, String iconName) {
         this.strength = strength;
         this.initiative = initiative;
         this.position = position;
@@ -22,7 +22,7 @@ public abstract class Organism implements Comparable<Organism>{
         this.icon = new ImageIcon(ClassLoader.getSystemResource(iconName));
     }
 
-    public Organism(int strength, int initiative, Position position, int age, World world, String iconName) {
+    Organism(int strength, int initiative, Position position, int age, World world, String iconName) {
         this.strength = strength;
         this.initiative = initiative;
         this.position = position;
@@ -31,10 +31,10 @@ public abstract class Organism implements Comparable<Organism>{
         this.icon = new ImageIcon(ClassLoader.getSystemResource(iconName));
     }
 
-    protected abstract void action();
+    abstract ActionResult action();
     protected abstract FightResults fight(Organism attacker);
 
-    public void addActionPoints(int amount){
+    void addActionPoints(int amount){
         actionPoints += amount;
     }
 
@@ -84,10 +84,6 @@ public abstract class Organism implements Comparable<Organism>{
 
     public World getWorld() {
         return world;
-    }
-
-    public void setDead(boolean dead) {
-        this.dead = dead;
     }
 
     public boolean isDead(){
