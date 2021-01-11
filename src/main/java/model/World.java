@@ -37,6 +37,12 @@ public class World {
         organisms.add(new Sloth(new Position(3, 5), this));
         organisms.add(new Sloth(new Position(3, 2), this));
         organisms.add(new Sloth(new Position(7, 5), this));
+
+        organisms.add(new FlatEarther(new Position(7, 7), this));
+        organisms.add(new FlatEarther(new Position(1, 8), this));
+        organisms.add(new FlatEarther(new Position(8, 5), this));
+
+
         turnCounter = 0;
 
         this.logger = logger;

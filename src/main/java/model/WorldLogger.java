@@ -54,6 +54,7 @@ public class WorldLogger {
             case WOLF -> "wilki";
             case FOX -> "lisy";
             case SLOTH -> "leniwce";
+            case FLAT_EARTHER -> "płaskoziemcy";
         };
     }
 
@@ -63,6 +64,7 @@ public class WorldLogger {
             case WOLF -> "wilk";
             case FOX -> "lis";
             case SLOTH -> "leniwiec";
+            case FLAT_EARTHER -> "płaskoziemca";
         };
     }
 }
