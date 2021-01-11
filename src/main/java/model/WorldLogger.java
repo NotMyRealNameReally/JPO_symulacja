@@ -15,7 +15,7 @@ public class WorldLogger {
 
     void logAction(ActionResult actionResult) {
         Organism organism = actionResult.getOrganism();
-        String log = "Pozycja: " + organism.getPosition() + ": ";
+        String log = "Pozycja " + organism.getPosition() + ": ";
         boolean meaningfulAction = false;
 
         if (actionResult.getFightResults().isPresent()) {
