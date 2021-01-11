@@ -1,5 +1,5 @@
 package model;
 
 public enum OrganismType {
-    SHEEP, WOLF, FOX
+    SHEEP, WOLF, FOX, SLOTH
 }

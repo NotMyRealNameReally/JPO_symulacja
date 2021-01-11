@@ -53,6 +53,7 @@ public class WorldLogger {
             case SHEEP -> "owce";
             case WOLF -> "wilki";
             case FOX -> "lisy";
+            case SLOTH -> "leniwce";
         };
     }
 
@@ -61,6 +62,7 @@ public class WorldLogger {
             case SHEEP -> "owca";
             case WOLF -> "wilk";
             case FOX -> "lis";
+            case SLOTH -> "leniwiec";
         };
     }
 }
