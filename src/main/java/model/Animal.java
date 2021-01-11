@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Random;
 
 abstract class Animal extends Organism {
-    private boolean canReproduce;
 
     Animal(int strength, int initiative, Position position, World world, String iconName, String name) {
         super(strength, initiative, position, world, iconName, name);
@@ -15,20 +14,13 @@ abstract class Animal extends Organism {
     @Override
     ActionResult action() {
         ActionResult actionResult = new ActionResult(this);
-        actionResult.setPosition(getPosition());
-        canReproduce = !getWorld().getPossibleMovesNoCollision(this).isEmpty();
         Position prevPosition = getPosition();
+
         if (move(true)) {
-            actionResult.setPosition(getPosition());
             getWorld().collisionOccurred(this).ifPresent(other -> {
                 if (other.getClass() == this.getClass()) {
-                    if (canReproduce) {
-                        actionResult.reproductionOccurred();
-                        Animal child = reproduce(prevPosition);
-                        getWorld().addOrganism(child);
-                        child.move(false);
-                    }
                     setPosition(prevPosition);
+                    actionResult.setReproductionOccurred(handleReproduction(other));
                 } else {
                     actionResult.setFightResults(fight(other));
                 }
@@ -36,6 +28,7 @@ abstract class Animal extends Organism {
         }
         setActionPoints(getActionPoints() - 1);
         setAge(getAge() + 1);
+        actionResult.setPosition(getPosition());
         return actionResult;
     }
 
@@ -50,6 +43,16 @@ abstract class Animal extends Organism {
         }
         results.addLoserAffliction(Affliction.DEAD);
         return results;
+    }
+
+    private boolean handleReproduction(Organism other) {
+        if (!getWorld().getPossibleMovesNoCollision(this).isEmpty()) {
+            Animal child = reproduce(getPosition());
+            getWorld().addOrganism(child);
+            child.move(false);
+            return true;
+        }
+        return false;
     }
 
     private boolean move(boolean collisionAllowed) {

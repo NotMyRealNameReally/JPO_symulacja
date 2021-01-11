@@ -21,8 +21,8 @@ class ActionResult {
         this.fightResults = fightResults;
     }
 
-    void reproductionOccurred() {
-        this.reproductionOccurred = true;
+    void setReproductionOccurred(boolean reproductionOccurred) {
+        this.reproductionOccurred = reproductionOccurred;
     }
 
     Position getPosition() {
