@@ -45,17 +45,7 @@ abstract class Animal extends Organism {
         return results;
     }
 
-    private boolean handleReproduction() {
-        if (!getWorld().getPossibleMovesNoCollision(this).isEmpty()) {
-            Animal child = reproduce(getPosition());
-            getWorld().addOrganism(child);
-            child.move(false);
-            return true;
-        }
-        return false;
-    }
-
-    private boolean move(boolean collisionAllowed) {
+    protected boolean move(boolean collisionAllowed) {
         List<Position> possiblePositions;
         if (collisionAllowed) {
             possiblePositions = getWorld().getPossibleMovesWithCollision(this);
@@ -66,6 +56,16 @@ abstract class Animal extends Organism {
             Random r = new Random();
             Position newPos = possiblePositions.get(r.nextInt(possiblePositions.size()));
             setPosition(newPos);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean handleReproduction() {
+        if (!getWorld().getPossibleMovesNoCollision(this).isEmpty()) {
+            Animal child = reproduce(getPosition());
+            getWorld().addOrganism(child);
+            child.move(false);
             return true;
         }
         return false;

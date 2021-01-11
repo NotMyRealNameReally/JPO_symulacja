@@ -1,5 +1,5 @@
 package model;
 
 public enum Affliction {
-    DEAD
+    DEAD, EVADED
 }

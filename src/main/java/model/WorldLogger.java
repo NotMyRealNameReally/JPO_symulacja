@@ -44,6 +44,7 @@ public class WorldLogger {
     private String afflictionToString(Affliction affliction) {
         return switch (affliction) {
             case DEAD -> "zabija";
+            case EVADED -> "unika";
         };
     }
 
@@ -51,6 +52,7 @@ public class WorldLogger {
         return switch (organism.getName()) {
             case SHEEP -> "owce";
             case WOLF -> "wilki";
+            case FOX -> "lisy";
         };
     }
 
@@ -58,6 +60,7 @@ public class WorldLogger {
         return switch (organism.getName()) {
             case SHEEP -> "owca";
             case WOLF -> "wilk";
+            case FOX -> "lis";
         };
     }
 }

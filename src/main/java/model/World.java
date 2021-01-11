@@ -28,6 +28,9 @@ public class World {
         organisms.add(new Sheep(new Position(2, 3), this));
         organisms.add(new Sheep(new Position(4, 5), this));
         organisms.add(new Sheep(new Position(6, 3), this));
+        organisms.add(new Fox(new Position(2, 6), this));
+        organisms.add(new Fox(new Position(6, 7), this));
+        organisms.add(new Fox(new Position(3, 6), this));
         turnCounter = 0;
 
         this.logger = logger;
@@ -49,6 +52,7 @@ public class World {
                      }
                  });
         organisms.removeIf(Organism::isDead);
+        organismsToAdd.removeIf(Organism::isDead);
         organisms.addAll(organismsToAdd);
         organismsToAdd.clear();
         turnCounter++;
