@@ -20,7 +20,7 @@ abstract class Animal extends Organism {
             getWorld().collisionOccurred(this).ifPresent(other -> {
                 if (other.getClass() == this.getClass()) {
                     setPosition(prevPosition);
-                    actionResult.setReproductionOccurred(handleReproduction(other));
+                    actionResult.setReproductionOccurred(handleReproduction());
                 } else {
                     actionResult.setFightResults(fight(other));
                 }
@@ -45,7 +45,7 @@ abstract class Animal extends Organism {
         return results;
     }
 
-    private boolean handleReproduction(Organism other) {
+    private boolean handleReproduction() {
         if (!getWorld().getPossibleMovesNoCollision(this).isEmpty()) {
             Animal child = reproduce(getPosition());
             getWorld().addOrganism(child);
