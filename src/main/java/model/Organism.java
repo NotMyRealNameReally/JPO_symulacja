@@ -11,9 +11,9 @@ public abstract class Organism implements Comparable<Organism>{
     private final World world;
     private boolean dead = false;
     private final ImageIcon icon;
-    private final String name;
+    private final OrganismType name;
 
-    Organism(int strength, int initiative, Position position, World world, String iconName, String name) {
+    Organism(int strength, int initiative, Position position, World world, String iconName, OrganismType name) {
         this.strength = strength;
         this.initiative = initiative;
         this.position = position;
@@ -24,7 +24,7 @@ public abstract class Organism implements Comparable<Organism>{
         this.name = name;
     }
 
-    Organism(int strength, int initiative, Position position, int age, World world, String iconName, String name) {
+    Organism(int strength, int initiative, Position position, int age, World world, String iconName, OrganismType name) {
         this.strength = strength;
         this.initiative = initiative;
         this.position = position;
@@ -97,7 +97,7 @@ public abstract class Organism implements Comparable<Organism>{
         return icon;
     }
 
-    public String getName() {
+    public OrganismType getName() {
         return name;
     }
 

@@ -5,7 +5,7 @@ import java.util.Random;
 
 abstract class Animal extends Organism {
 
-    Animal(int strength, int initiative, Position position, World world, String iconName, String name) {
+    Animal(int strength, int initiative, Position position, World world, String iconName, OrganismType name) {
         super(strength, initiative, position, world, iconName, name);
     }
 

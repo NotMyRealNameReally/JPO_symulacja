@@ -22,7 +22,7 @@ public class WorldLogger {
             log += reportFight(actionResult.getFightResults().get());
             meaningfulAction = true;
         } else if (actionResult.hasReproductionOccurred()) {
-            log += getPlural(organism.getName()) + " rozmnażają się! ";
+            log += getNamePlural(organism) + " rozmnażają się! ";
             meaningfulAction = true;
         }
         if(meaningfulAction){
@@ -31,11 +31,13 @@ public class WorldLogger {
     }
 
     private String reportFight(FightResults fightResults) {
-        String result = fightResults.getWinner().getName() + " wiek: " + fightResults.getWinner().getAge() + " ";
+        Organism winner = fightResults.getWinner();
+        Organism loser = fightResults.getLoser();
+        String result = getNameSingular(winner) + " wiek: " + winner.getAge() + " ";
         result += fightResults.getLoserAfflictions().stream()
                               .map(this::afflictionToString)
                               .collect(Collectors.joining(", "));
-        result += " " + fightResults.getLoser().getName() + " wiek: " + fightResults.getLoser().getAge() + " ";
+        result += " " + getNameSingular(loser) + " wiek: " + loser.getAge() + " ";
         return result;
     }
 
@@ -45,11 +47,17 @@ public class WorldLogger {
         };
     }
 
-    private String getPlural(String name) {
-        return switch (name) {
-            case "owca" -> "owce";
-            case "wilk" -> "wilki";
-            default -> "brak";
+    private String getNamePlural(Organism organism) {
+        return switch (organism.getName()) {
+            case SHEEP -> "owce";
+            case WOLF -> "wilki";
+        };
+    }
+
+    private String getNameSingular(Organism organism) {
+        return switch (organism.getName()) {
+            case SHEEP -> "owca";
+            case WOLF -> "wilk";
         };
     }
 }
