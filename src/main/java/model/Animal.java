@@ -36,7 +36,7 @@ abstract class Animal extends Organism {
     protected FightResults fight(Organism defender) {
         FightResults results;
 
-        if (defender.getStrength() < this.getStrength()) {
+        if (defender.getStrength() <= this.getStrength()) {
             results = new FightResults(this, defender);
         } else {
             results = new FightResults(defender, this);
