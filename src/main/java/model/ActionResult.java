@@ -4,7 +4,7 @@ import java.util.Optional;
 
 class ActionResult {
     private final Organism organism;
-    private Position newPosition;
+    private Position position;
     private FightResults fightResults;
     private boolean reproductionOccurred;
 
@@ -13,8 +13,8 @@ class ActionResult {
         this.reproductionOccurred = false;
     }
 
-    void setNewPosition(Position newPosition) {
-        this.newPosition = newPosition;
+    void setPosition(Position position) {
+        this.position = position;
     }
 
     void setFightResults(FightResults fightResults) {
@@ -25,8 +25,8 @@ class ActionResult {
         this.reproductionOccurred = true;
     }
 
-    Optional<Position> getNewPosition() {
-        return Optional.ofNullable(newPosition);
+    Position getPosition() {
+        return position;
     }
 
     Optional<FightResults> getFightResults() {

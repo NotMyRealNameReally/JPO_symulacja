@@ -1,5 +1,5 @@
 package model;
 
 public interface WorldLoggerListener {
-    void log(String message);
+    void log(LogMessage logMessage);
 }

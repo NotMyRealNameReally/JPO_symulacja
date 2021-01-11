@@ -15,10 +15,11 @@ abstract class Animal extends Organism {
     @Override
     ActionResult action() {
         ActionResult actionResult = new ActionResult(this);
+        actionResult.setPosition(getPosition());
         canReproduce = !getWorld().getPossibleMovesNoCollision(this).isEmpty();
         Position prevPosition = getPosition();
         if (move(true)) {
-            actionResult.setNewPosition(getPosition());
+            actionResult.setPosition(getPosition());
             getWorld().collisionOccurred(this).ifPresent(other -> {
                 if (other.getClass() == this.getClass()) {
                     if (canReproduce) {
