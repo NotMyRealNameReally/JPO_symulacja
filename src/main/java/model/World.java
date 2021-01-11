@@ -36,14 +36,14 @@ public class World {
     }
 
     public void newTurn() {
-        //logger.logNewTurn(turnCounter);
+        logger.logNewTurn(turnCounter);
         organisms.stream().sorted()
                  .forEach(organism -> {
                      if (!organism.isDead()) {
                          while (organism.getActionPoints() > 0) {
                              ActionResult result = organism.action();
                              result.getFightResults().ifPresent(this::resolveFight);
-                             //logger.logAction(result);
+                             logger.logAction(result);
                          }
                          organism.addActionPoints(1);
                      }
@@ -84,8 +84,8 @@ public class World {
 
     Optional<Organism> collisionOccurred(Organism organism) {
         return Stream.concat(organisms.stream(), organismsToAdd.stream())
-                     .filter(o -> o.getPosition().equals(organism.getPosition()) &&
-                             o != organism)
+                     .filter(other -> other.getPosition().equals(organism.getPosition()) &&
+                             other != organism)
                      .findFirst();
     }
 

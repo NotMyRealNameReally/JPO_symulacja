@@ -32,4 +32,8 @@ public class Position {
                 y == position.y;
     }
 
+    @Override
+    public String toString() {
+        return ("(" + x + ", " + y + ")");
+    }
 }

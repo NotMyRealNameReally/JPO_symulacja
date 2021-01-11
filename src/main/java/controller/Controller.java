@@ -2,6 +2,7 @@ package controller;
 
 import model.World;
 import model.WorldLogger;
+import view.ControlPanelListener;
 import view.LoggingPanel;
 import view.ControlPanel;
 import view.MainFrame;
@@ -23,7 +24,7 @@ public class Controller implements ControlPanelListener {
 
     @Override
     public void createNewWorld(int width, int height) {
-        this.world = new World(new WorldLogger(), worldPanel);
+        this.world = new World(new WorldLogger(loggingPanel), worldPanel);
     }
 
     @Override

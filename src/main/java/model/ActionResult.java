@@ -10,7 +10,7 @@ class ActionResult {
 
     ActionResult(Organism organism) {
         this.organism = organism;
-        this.reproductionOccurred = true;
+        this.reproductionOccurred = false;
     }
 
     void setNewPosition(Position newPosition) {

@@ -2,7 +2,7 @@ package model;
 
 class Wolf extends Animal {
     public Wolf(Position position, World world) {
-        super(9, 5, position, world, "wolf.png");
+        super(9, 5, position, world, "wolf.png", "wilk");
     }
 
     @Override

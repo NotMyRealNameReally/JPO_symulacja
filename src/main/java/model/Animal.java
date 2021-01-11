@@ -6,8 +6,8 @@ import java.util.Random;
 abstract class Animal extends Organism {
     private boolean canReproduce;
 
-    Animal(int strength, int initiative, Position position, World world, String iconName) {
-        super(strength, initiative, position, world, iconName);
+    Animal(int strength, int initiative, Position position, World world, String iconName, String name) {
+        super(strength, initiative, position, world, iconName, name);
     }
 
     protected abstract Animal reproduce(Position position);
@@ -34,6 +34,7 @@ abstract class Animal extends Organism {
             });
         }
         setActionPoints(getActionPoints() - 1);
+        setAge(getAge() + 1);
         return actionResult;
     }
 
