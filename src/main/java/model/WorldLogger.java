@@ -55,6 +55,9 @@ public class WorldLogger {
             case FOX -> "lisy";
             case SLOTH -> "leniwce";
             case FLAT_EARTHER -> "płaskoziemcy";
+            case GRASS -> "trawy";
+            case GUARANA -> "guarany";
+            case DANDELION -> "mlecze";
         };
     }
 
@@ -65,6 +68,9 @@ public class WorldLogger {
             case FOX -> "lis";
             case SLOTH -> "leniwiec";
             case FLAT_EARTHER -> "płaskoziemca";
+            case GRASS -> "trawa";
+            case GUARANA -> "guarana";
+            case DANDELION -> "mlecz";
         };
     }
 }

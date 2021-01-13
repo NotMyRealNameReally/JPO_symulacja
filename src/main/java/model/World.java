@@ -42,6 +42,10 @@ public class World {
         organisms.add(new FlatEarther(new Position(1, 8), this));
         organisms.add(new FlatEarther(new Position(8, 5), this));
 
+        organisms.add(new Grass(new Position(9, 3), this));
+        organisms.add(new Grass(new Position(10, 9), this));
+        organisms.add(new Grass(new Position(8, 2), this));
+
 
         turnCounter = 0;
 
