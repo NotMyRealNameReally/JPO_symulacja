@@ -33,11 +33,18 @@ public class WorldLogger {
     private String reportFight(FightResults fightResults) {
         Organism winner = fightResults.getWinner();
         Organism loser = fightResults.getLoser();
+
         String result = getNameSingular(winner) + " wiek: " + winner.getAge() + " ";
         result += fightResults.getLoserAfflictions().stream()
                               .map(this::afflictionToString)
                               .collect(Collectors.joining(", "));
         result += " " + getNameSingular(loser) + " wiek: " + loser.getAge() + " ";
+
+        if(!fightResults.getWinnerAfflictions().isEmpty()) {
+            result += fightResults.getWinnerAfflictions().stream()
+                    .map(this::afflictionToString)
+                    .collect(Collectors.joining(", ", " i ", ""));
+        }
         return result;
     }
 
@@ -45,6 +52,8 @@ public class WorldLogger {
         return switch (affliction) {
             case DEAD -> "zabija";
             case EVADED -> "unika";
+            case EATEN -> "zjada";
+            case STRONGER -> "nabiera siły";
         };
     }
 
@@ -68,8 +77,8 @@ public class WorldLogger {
             case FOX -> "lis";
             case SLOTH -> "leniwiec";
             case FLAT_EARTHER -> "płaskoziemca";
-            case GRASS -> "trawa";
-            case GUARANA -> "guarana";
+            case GRASS -> "trawę";
+            case GUARANA -> "guaranę";
             case DANDELION -> "mlecz";
         };
     }

@@ -1,6 +1,7 @@
 package model;
 
 import javax.swing.ImageIcon;
+import java.util.List;
 
 public abstract class Organism implements Comparable<Organism>{
     private int strength;
@@ -36,6 +37,7 @@ public abstract class Organism implements Comparable<Organism>{
 
     abstract ActionResult action();
     protected abstract FightResults fight(Organism defender);
+    protected abstract List<Affliction> react();
 
     void addActionPoints(int amount){
         actionPoints += amount;

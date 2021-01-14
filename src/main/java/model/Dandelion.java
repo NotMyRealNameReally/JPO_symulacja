@@ -2,12 +2,7 @@ package model;
 
 class Dandelion extends Plant {
     Dandelion(Position position, World world){
-        super(0, position, world, "dandelion.png", OrganismType.DANDELION);
-    }
-
-    @Override
-    ActionResult action() {
-        return super.action();
+        super(0, position, world, "dandelion.png", OrganismType.DANDELION,0.3, 3);
     }
 
     @Override

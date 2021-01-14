@@ -1,11 +1,16 @@
 package model;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
 abstract class Plant extends Organism {
-    Plant(int strength, Position position, World world, String iconName, OrganismType name){
+    private double reproductionChance;
+    private int reproductionTries;
+    Plant(int strength, Position position, World world, String iconName, OrganismType name, double reproductionChance, int reproductionTries){
         super(strength, 0, position, world, iconName, name);
+        this.reproductionChance = reproductionChance;
+        this.reproductionTries = reproductionTries;
     }
 
     protected abstract Plant reproduce(Position position);
@@ -15,13 +20,16 @@ abstract class Plant extends Organism {
         ActionResult actionResult = new ActionResult(this);
         actionResult.setPosition(getPosition());
         Random random = new Random();
-        if(random.nextInt() > 0.7){
-            List<Position> possiblePositions = getWorld().getPossibleMovesNoCollision(this);
-            if(!possiblePositions.isEmpty()) {
-                actionResult.setReproductionOccurred(true);
-                Position position = possiblePositions.get(random.nextInt(possiblePositions.size()));
-                Plant other = reproduce(position);
-                getWorld().addOrganism(other);
+        List<Position> possiblePositions = getWorld().getPossibleMovesNoCollision(this);
+        for(int i = 0; i < reproductionTries; i++) {
+            if (random.nextInt() < reproductionChance) {
+                if (!possiblePositions.isEmpty()) {
+                    Position position = possiblePositions.get(random.nextInt(possiblePositions.size()));
+                    Plant other = reproduce(position);
+                    getWorld().addOrganism(other);
+                } else{
+                    break;
+                }
             }
         }
         setActionPoints(getActionPoints() - 1);
@@ -31,5 +39,10 @@ abstract class Plant extends Organism {
     @Override
     protected FightResults fight(Organism defender) {
         return null;
+    }
+
+    @Override
+    protected List<Affliction> react() {
+        return Collections.emptyList();
     }
 }

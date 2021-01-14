@@ -1,5 +1,6 @@
 package model;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -38,11 +39,23 @@ abstract class Animal extends Organism {
 
         if (defender.getStrength() <= this.getStrength()) {
             results = new FightResults(this, defender);
+            if(defender instanceof Plant){
+                results.addLoserAffliction(Affliction.EATEN);
+            } else {
+                results.addLoserAffliction(Affliction.DEAD);
+            }
+            defender.react().forEach(results::addWinnerAffliction);
         } else {
             results = new FightResults(defender, this);
+            results.addLoserAffliction(Affliction.DEAD);
+            defender.react().forEach(results::addLoserAffliction);
         }
-        results.addLoserAffliction(Affliction.DEAD);
         return results;
+    }
+
+    @Override
+    protected List<Affliction> react() {
+        return Collections.emptyList();
     }
 
     protected boolean move(boolean collisionAllowed) {

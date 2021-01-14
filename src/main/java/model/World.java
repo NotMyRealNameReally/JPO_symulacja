@@ -46,6 +46,14 @@ public class World {
         organisms.add(new Grass(new Position(10, 9), this));
         organisms.add(new Grass(new Position(8, 2), this));
 
+        organisms.add(new Guarana(new Position(8, 13), this));
+        organisms.add(new Guarana(new Position(11, 6), this));
+        organisms.add(new Guarana(new Position(11, 10), this));
+
+        organisms.add(new Dandelion(new Position(4, 16), this));
+        organisms.add(new Dandelion(new Position(18, 12), this));
+        organisms.add(new Dandelion(new Position(13, 10), this));
+
 
         turnCounter = 0;
 
@@ -128,7 +136,8 @@ public class World {
 
     private void applyAffliction(Organism organism, Affliction affliction) {
         switch (affliction) {
-            case DEAD -> organism.tagAsDead();
+            case DEAD, EATEN -> organism.tagAsDead();
+            case STRONGER -> organism.setStrength(organism.getStrength() + 3);
         }
     }
 
