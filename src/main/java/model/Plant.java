@@ -7,6 +7,7 @@ import java.util.Random;
 abstract class Plant extends Organism {
     private double reproductionChance;
     private int reproductionTries;
+
     Plant(int strength, Position position, World world, String iconName, OrganismType name, double reproductionChance, int reproductionTries){
         super(strength, 0, position, world, iconName, name);
         this.reproductionChance = reproductionChance;
@@ -24,7 +25,9 @@ abstract class Plant extends Organism {
         for(int i = 0; i < reproductionTries; i++) {
             if (random.nextInt() < reproductionChance) {
                 if (!possiblePositions.isEmpty()) {
-                    Position position = possiblePositions.get(random.nextInt(possiblePositions.size()));
+                    int index = random.nextInt(possiblePositions.size());
+                    Position position = possiblePositions.get(index);
+                    possiblePositions.remove(index);
                     Plant other = reproduce(position);
                     getWorld().addOrganism(other);
                 } else{
