@@ -1,5 +1,7 @@
 package controller;
 
+import model.OrganismType;
+import model.Position;
 import model.World;
 import model.WorldLogger;
 import view.*;
@@ -7,7 +9,7 @@ import view.*;
 import javax.swing.*;
 import java.io.*;
 
-public class Controller implements ControlPanelListener, MenuBarListener {
+public class Controller implements ControlPanelListener, MenuBarListener, WorldPanelListener {
     private World world;
     private final WorldPanel worldPanel;
     private final ControlPanel controlPanel;
@@ -16,7 +18,7 @@ public class Controller implements ControlPanelListener, MenuBarListener {
     private final MainFrame mainFrame;
 
     public Controller() {
-        this.worldPanel = new WorldPanel();
+        this.worldPanel = new WorldPanel(this);
         this.controlPanel = new ControlPanel(this);
         this.loggingPanel = new LoggingPanel();
         this.menuBar = new MenuBar(this);
@@ -74,5 +76,10 @@ public class Controller implements ControlPanelListener, MenuBarListener {
                 mainFrame.showErrorMessage("Could not load");
             }
         }
+    }
+
+    @Override
+    public void addOrganism(Position position, OrganismType type) {
+        world.forceAddOrganism(position, type);
     }
 }

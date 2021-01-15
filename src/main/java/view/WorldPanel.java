@@ -1,13 +1,17 @@
 package view;
 
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Image;
-
-import javax.swing.JPanel;
-
 import dto.WorldDto;
+import model.OrganismType;
+import model.Position;
 import model.WorldListener;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class WorldPanel extends JPanel implements WorldListener {
     private WorldDto worldModel;
@@ -16,13 +20,28 @@ public class WorldPanel extends JPanel implements WorldListener {
     private int mapWidth;
     private int mapHeight;
 
+    private final JPopupMenu addOrganismPopupMenu;
+    private final List<OrganismMenuItem> organismMenuItems;
+    private Position positionToAdd;
+
+    private final WorldPanelListener listener;
+
     private final int MAP_PADDING = 10;
-    private final int CELL_PADDING = 2;
     private final int CELL_SIZE = 30;
 
-    public WorldPanel() {
+    public WorldPanel(WorldPanelListener listener) {
+        this.listener = listener;
         preferredWidth = 800;
         preferredHeight = 800;
+
+        organismMenuItems = new ArrayList<>();
+        for (OrganismType type : OrganismType.values()) {
+            organismMenuItems.add(new OrganismMenuItem(type));
+        }
+        addOrganismPopupMenu = new JPopupMenu();
+        organismMenuItems.forEach(addOrganismPopupMenu::add);
+        addMouseListener(new PopupListener());
+        addMenuItemListeners();
     }
 
     @Override
@@ -39,6 +58,22 @@ public class WorldPanel extends JPanel implements WorldListener {
     @Override
     public void worldChanged() {
         repaint();
+    }
+
+    private Optional<Position> getPositionAt(int x, int y) {
+        int posX = (x - ((getWidth() - mapWidth) / 2)) / CELL_SIZE;
+        int posY = (y - ((getHeight() - mapHeight) / 2)) / CELL_SIZE;
+        if (posX >= 0 && posX < worldModel.getSizeX() && posY >= 0 && posY < worldModel.getSizeY()) {
+            return Optional.of(new Position(posX, posY));
+        }
+        return Optional.empty();
+    }
+
+    private void addMenuItemListeners() {
+        organismMenuItems
+                .forEach(organismMenuItem ->
+                        organismMenuItem.addActionListener(e ->
+                                listener.addOrganism(positionToAdd, organismMenuItem.getOrganismType())));
     }
 
     private void drawMap(Graphics g) {
@@ -68,7 +103,7 @@ public class WorldPanel extends JPanel implements WorldListener {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if(worldModel != null) {
+        if (worldModel != null) {
             g.translate((getWidth() - mapWidth) / 2, (getHeight() - mapHeight) / 2);
             drawMap(g);
             drawOrganisms(g);
@@ -78,5 +113,17 @@ public class WorldPanel extends JPanel implements WorldListener {
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(preferredWidth, preferredHeight);
+    }
+
+    class PopupListener extends MouseAdapter {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            if (e.getButton() == MouseEvent.BUTTON3) {
+                getPositionAt(e.getX(), e.getY()).ifPresent(position -> {
+                    addOrganismPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+                    positionToAdd = position;
+                });
+            }
+        }
     }
 }

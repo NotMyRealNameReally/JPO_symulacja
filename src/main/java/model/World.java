@@ -84,6 +84,21 @@ public class World implements Serializable {
         listener.worldChanged();
     }
 
+    public void forceAddOrganism(Position position, OrganismType type){
+        organisms.removeIf(organism -> organism.getPosition().equals(position));
+        organisms.add(switch(type){
+            case SHEEP -> new Sheep(position, this);
+            case WOLF -> new Wolf(position, this);
+            case FOX -> new Fox(position, this);
+            case SLOTH -> new Sloth(position, this);
+            case GRASS -> new Grass(position, this);
+            case GUARANA -> new Guarana(position, this);
+            case DANDELION -> new Dandelion(position, this);
+            case FLAT_EARTHER -> new FlatEarther(position, this);
+        });
+        listener.worldChanged();
+    }
+
     void addOrganism(Organism organism) {
         organismsToAdd.add(organism);
     }
