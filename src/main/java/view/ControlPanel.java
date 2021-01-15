@@ -20,7 +20,7 @@ public class ControlPanel extends JPanel {
     }
 
     private void attachBtnListeners(ControlPanelListener listener) {
-        newWorldBtn.addActionListener(e -> listener.createNewWorld(10, 10));
+        newWorldBtn.addActionListener(e -> listener.createNewWorld(20, 20));
         nextTurnBtn.addActionListener(e -> listener.nextTurn());
     }
 }

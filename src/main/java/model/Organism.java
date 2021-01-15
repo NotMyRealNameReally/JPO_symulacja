@@ -1,9 +1,10 @@
 package model;
 
 import javax.swing.ImageIcon;
+import java.io.Serializable;
 import java.util.List;
 
-public abstract class Organism implements Comparable<Organism>{
+public abstract class Organism implements Comparable<Organism>, Serializable {
     private int strength;
     private int initiative;
     private Position position;

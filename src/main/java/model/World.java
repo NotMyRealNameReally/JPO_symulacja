@@ -1,27 +1,30 @@
 package model;
 
+import dto.WorldDto;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import dto.WorldDto;
-
-public class World {
+public class World implements Serializable {
     private int turnCounter;
     private final int sizeX;
     private final int sizeY;
     private final List<Organism> organisms;
     private final List<Organism> organismsToAdd;
-    private final WorldLogger logger;
-    private WorldListener listener;
+    private static transient WorldLogger logger;
+    private transient WorldListener listener;
 
-    public World(WorldLogger logger, WorldListener listener) {
-        sizeX = 20;
-        sizeY = 20;
+    public World(int sizeX, int sizeY, WorldListener listener) {
+        this.sizeX = sizeX;
+        this.sizeY = sizeY;
         organisms = new ArrayList<>();
         organismsToAdd = new ArrayList<>();
+
+
         organisms.add(new Wolf(new Position(2, 7), this));
         organisms.add(new Wolf(new Position(6, 9), this));
         organisms.add(new Wolf(new Position(7, 3), this));
@@ -57,7 +60,6 @@ public class World {
 
         turnCounter = 0;
 
-        this.logger = logger;
         this.listener = listener;
         listener.worldCreated(new WorldDto(this));
     }
@@ -65,16 +67,16 @@ public class World {
     public void newTurn() {
         logger.logNewTurn(turnCounter);
         organisms.stream().sorted()
-                 .forEach(organism -> {
-                     if (!organism.isDead()) {
-                         while (organism.getActionPoints() > 0) {
-                             ActionResult result = organism.action();
-                             result.getFightResults().ifPresent(this::resolveFight);
-                             logger.logAction(result);
-                         }
-                         organism.addActionPoints(1);
-                     }
-                 });
+                .forEach(organism -> {
+                    if (!organism.isDead()) {
+                        while (organism.getActionPoints() > 0) {
+                            ActionResult result = organism.action();
+                            result.getFightResults().ifPresent(this::resolveFight);
+                            logger.logAction(result);
+                        }
+                        organism.addActionPoints(1);
+                    }
+                });
         organisms.removeIf(Organism::isDead);
         organismsToAdd.removeIf(Organism::isDead);
         organisms.addAll(organismsToAdd);
@@ -112,9 +114,9 @@ public class World {
 
     Optional<Organism> collisionOccurred(Organism organism) {
         return Stream.concat(organisms.stream(), organismsToAdd.stream())
-                     .filter(other -> other.getPosition().equals(organism.getPosition()) &&
-                             other != organism)
-                     .findFirst();
+                .filter(other -> other.getPosition().equals(organism.getPosition()) &&
+                        other != organism)
+                .findFirst();
     }
 
     private boolean isValidPosition(Position pos) {
@@ -126,7 +128,7 @@ public class World {
 
     private boolean isEmptyPosition(Position pos) {
         return Stream.concat(organisms.stream(), organismsToAdd.stream())
-                     .noneMatch(organism -> organism.getPosition().equals(pos));
+                .noneMatch(organism -> organism.getPosition().equals(pos));
     }
 
     private void resolveFight(FightResults fightResults) {
@@ -155,5 +157,14 @@ public class World {
 
     public List<Organism> getOrganisms() {
         return organisms;
+    }
+
+    public void setListener(WorldListener listener) {
+        this.listener = listener;
+        listener.worldCreated(new WorldDto(this));
+    }
+
+    public static void setLogger(WorldLogger logger) {
+        World.logger = logger;
     }
 }
