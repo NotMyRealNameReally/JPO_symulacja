@@ -4,6 +4,7 @@ import dto.WorldDto;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,47 +22,45 @@ public class World implements Serializable {
     public World(int sizeX, int sizeY, WorldListener listener) {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
+        turnCounter = 0;
         organisms = new ArrayList<>();
         organismsToAdd = new ArrayList<>();
 
+        List<Position> availablePositions = new ArrayList<>(sizeX * sizeY);
+        for (int i = 0; i < sizeX; i++) {
+            for (int j = 0; j < sizeY; j++) {
+                availablePositions.add(new Position(i, j));
+            }
+        }
+        Collections.shuffle(availablePositions);
+        int positionsToFill = (int) (sizeX * sizeY * 0.6);
 
-        organisms.add(new Wolf(new Position(2, 7), this));
-        organisms.add(new Wolf(new Position(6, 9), this));
-        organisms.add(new Wolf(new Position(7, 3), this));
+        for(int i = 0; i < (positionsToFill * 0.05); i++) {
+            organisms.add(new Wolf(availablePositions.remove(availablePositions.size() - 1), this));
+        }
+        for(int i = 0; i < (positionsToFill * 0.15); i++){
+            organisms.add(new Sheep(availablePositions.remove(availablePositions.size() - 1), this));
+        }
+        for(int i = 0; i < (positionsToFill * 0.2); i++){
+            organisms.add(new Fox(availablePositions.remove(availablePositions.size() - 1), this));
+        }
+        for(int i = 0; i < (positionsToFill * 0.15); i++){
+            organisms.add(new Sloth(availablePositions.remove(availablePositions.size() - 1), this));
+        }
+        for(int i = 0; i < (positionsToFill * 0.05); i++){
+            organisms.add(new FlatEarther(availablePositions.remove(availablePositions.size() - 1), this));
+        }
+        for(int i = 0; i < (positionsToFill * 0.3); i++){
+            organisms.add(new Grass(availablePositions.remove(availablePositions.size() - 1), this));
+        }
+        for(int i = 0; i < (positionsToFill * 0.08); i++){
+            organisms.add(new Guarana(availablePositions.remove(availablePositions.size() - 1), this));
+        }
+        for(int i = 0; i < (positionsToFill * 0.02); i++){
+            organisms.add(new Dandelion(availablePositions.remove(availablePositions.size() - 1), this));
+        }
 
-        organisms.add(new Sheep(new Position(2, 3), this));
-        organisms.add(new Sheep(new Position(4, 5), this));
-        organisms.add(new Sheep(new Position(6, 3), this));
-
-        organisms.add(new Fox(new Position(2, 6), this));
-        organisms.add(new Fox(new Position(6, 7), this));
-        organisms.add(new Fox(new Position(3, 6), this));
-
-        organisms.add(new Sloth(new Position(3, 5), this));
-        organisms.add(new Sloth(new Position(3, 2), this));
-        organisms.add(new Sloth(new Position(7, 5), this));
-
-        organisms.add(new FlatEarther(new Position(7, 7), this));
-        organisms.add(new FlatEarther(new Position(1, 8), this));
-        organisms.add(new FlatEarther(new Position(8, 5), this));
-
-        organisms.add(new Grass(new Position(9, 3), this));
-        organisms.add(new Grass(new Position(10, 9), this));
-        organisms.add(new Grass(new Position(8, 2), this));
-
-        organisms.add(new Guarana(new Position(8, 13), this));
-        organisms.add(new Guarana(new Position(11, 6), this));
-        organisms.add(new Guarana(new Position(11, 10), this));
-
-        organisms.add(new Dandelion(new Position(4, 16), this));
-        organisms.add(new Dandelion(new Position(18, 12), this));
-        organisms.add(new Dandelion(new Position(13, 10), this));
-
-
-        turnCounter = 0;
-
-        this.listener = listener;
-        listener.worldCreated(new WorldDto(this));
+        setListener(listener);
     }
 
     public void newTurn() {
